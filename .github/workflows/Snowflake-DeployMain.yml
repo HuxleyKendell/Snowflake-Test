@@ -51,7 +51,7 @@ jobs:
       - name: Clean Build DB
         if: env.executeBuild == 'true'
         run: |
-          flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\CleanDB"
+          flyway -baselineOnMigrate="true" -user="${{ env.user }}" -password="${{ env.password }}" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info clean info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\CleanDB"
         
       # Runs the Flyway Migrate command against the Build database
       - name: Migrate Build DB
@@ -64,7 +64,7 @@ jobs:
     name: Deploy Production
     # The type of runner that the job will run on
     runs-on: self-hosted
-    needs: Test
+    needs: Build
     environment: 'prod' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     env:
