@@ -1,0 +1,20 @@
+databaseType = "Snowflake"
+id = "086e4f2e-f933-4922-ae2d-61cc3890f9d5"
+name = "HuxS"
+
+[flyway]
+locations = [ "filesystem:migrations" ]
+mixed = true
+outOfOrder = true
+validateMigrationNaming = true
+
+[flyway.check]
+majorTolerance = 0
+
+[flywayDesktop]
+developmentEnvironment = "development"
+schemaModel = "schema-model"
+shadowEnvironment = "shadow"
+
+[redgateCompare]
+filterFile = "filter.rgf"
