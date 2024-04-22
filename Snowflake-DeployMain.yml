@@ -12,6 +12,11 @@ on:
  
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+   inputs:
+       CherryPick:
+         description: 'CherryPick Scripts to Deploy'     
+         required: true
+         default: '0'
  
 env:
  
@@ -30,8 +35,8 @@ jobs:
       stage: 'Build'
       
       # Environment Secrets - In Real Ensure all of the below have been created as an Environment Secret (Projects Settings > Secrets > Actions section, specially related to the environment in question) #
-      databaseName: "WidgetZBuild"
-      JDBC: "jdbc:sqlserver://localhost;databaseName=WidgetZBuild;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+      databaseName: "HUXSNOWFLAKE_BUILD"
+      JDBC: "jdbc:snowflake://rv88946.west-europe.azure.snowflakecomputing.com/?db=HUXSNOWFLAKE_PROD&jdbc_query_result_format=json" 
 
       displayName: 'Build'
       executeBuild: true
@@ -54,68 +59,6 @@ jobs:
         run: |
           flyway -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false' -reportFilename="Reports\ValidateVScripts"
           
- 
-
-  CodeCheck:
-    name: Code Anaylsis
-    # The type of runner that the job will run on
-    runs-on: self-hosted
-    needs: build
-    environment: 'Build' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
-    if: ${{ true }} #Set this variable to false to temporarily disable the job
-    env:
-      stage: 'BuildCodeCheck'
-      databaseName: "WidgetBuild"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetTest;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
-      pauseForCodeReview: true
- 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-        
-      # Runs the Flyway Migrate against the Production database
-      - name: Migrate Build DB
-        if: ${{ true }}
-        run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
-
-      - name: Install SQL Fluff
-        if: ${{ true }}
-        run: |
-          ${{ GITHUB.WORKSPACE }}\Scripts\pip.exe install sqlfluff==1.2.1'
-      
-      - name: Check Code
-        run: |
-          flyway check -code -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" -url="${{ env.JDBC }}" -cleanDisabled='false'
-
-          
-
-
-  Test:
-    name: Deploy Test
-    # The type of runner that the job will run on
-    runs-on: self-hosted
-    needs: build
-    environment: 'Test' #Ensure this environment name is setup in the projects Settings>Environment area. Ensuring any reviewers are also configured 
-    if: ${{ true }} #Set this variable to false to temporarily disable the job
-    env:
-      stage: 'Test'
-      databaseName: "WidgetTest"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetTest;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
-      pauseForCodeReview: true
- 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-        
-      # Runs the Flyway Migrate against the Production database
-      - name: Migrate Build DB
-        if: ${{ true }}
-        run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
-
 
   prod:
     name: Deploy Production
@@ -126,8 +69,8 @@ jobs:
     if: ${{ true }} #Set this variable to false to temporarily disable the job
     env:
       stage: 'Prod'
-      databaseName: "WidgetProd"
-      JDBC: "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;databaseName=WidgetProd;encrypt=true;integratedSecurity=true;trustServerCertificate=true" 
+      databaseName: "HUXSNOWFLAKE_PROD"
+      JDBC: "jdbc:snowflake://rv88946.west-europe.azure.snowflakecomputing.com/?db=HUXSNOWFLAKE_PROD&jdbc_query_result_format=json" 
       pauseForCodeReview: true
  
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -139,4 +82,4 @@ jobs:
       - name: Migrate Build DB
         if: ${{ true }}
         run: |
-          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false'
+          flyway -user="${{ env.userName }}" -password="${{ env.password }}" -baselineOnMigrate="true" -licenseKey="${{ env.FLYWAY_LICENSE_KEY }}" -configFiles="${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -url="${{ env.JDBC }}" -cleanDisabled='false' -target='${{ github.event.inputs.CherryPick }}'
