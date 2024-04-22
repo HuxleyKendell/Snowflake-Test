@@ -19,5 +19,5 @@ shadowEnvironment = "shadow"
 [redgateCompare]
 filterFile = "filter.rgf"
 
-[environments.target1]
+[environments.prod]
 url = "jdbc:snowflake://rv88946.west-europe.azure.snowflakecomputing.com/?db=HUXSNOWFLAKE_PROD&jdbc_query_result_format=json"
