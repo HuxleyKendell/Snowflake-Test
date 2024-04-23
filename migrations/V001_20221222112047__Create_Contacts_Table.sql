@@ -1,60 +1,72 @@
-create table CONTACTS 
+-- Create the CONTACTS table
+CREATE TABLE CONTACTS 
 (
-    ID int not null
-)
+    ID INT NOT NULL
+);
+
+-- Add additional columns to the CONTACTS table
 ALTER TABLE CONTACTS 
-ADD
-    first_name nvarchar (128),
-	last_name nvarchar (128),
-	gender nvarchar (128),
-	address_line_1 nvarchar (128),
-	address_line_2 nvarchar (128),
-	city nvarchar (128),
-	postcode nvarchar (128),
-	phone int,
-	email nvarchar (128);
+ADD 
+    first_name NVARCHAR(128),
+    last_name NVARCHAR(128),
+    gender NVARCHAR(128),
+    address_line_1 NVARCHAR(128),
+    address_line_2 NVARCHAR(128),
+    city NVARCHAR(128),
+    postcode NVARCHAR(128),
+    phone INT,
+    email NVARCHAR(128);
 
-	
-create table PRODUCTS (
-    ID int not null
-)
-alter table PRODUCTS 
-    ADD
+-- Create the PRODUCTS table
+CREATE TABLE PRODUCTS 
+(
+    ID INT NOT NULL
+);
 
-	ProductName nvarchar (128),
-	ProductCode int,
-	Category nvarchar (128),
-	CurrentLine nvarchar (128),
-	ReorderQuantity int;
-	
-	create table LOCATIONS
+-- Add additional columns to the PRODUCTS table
+ALTER TABLE PRODUCTS 
+ADD 
+    ProductName NVARCHAR(128),
+    ProductCode INT,
+    Category NVARCHAR(128),
+    CurrentLine NVARCHAR(128),
+    ReorderQuantity INT;
+
+-- Create the LOCATIONS table
+CREATE TABLE LOCATIONS
 (
-    ID int not null
-)
-create table SALESTEAM
+    ID INT NOT NULL
+);
+
+-- Create the SALESTEAM table
+CREATE TABLE SALESTEAM
 (
-    ID int not null
-)
+    ID INT NOT NULL
+);
+
+-- Create or replace the GetContacts stored procedure
 CREATE OR REPLACE PROCEDURE GetContacts()
-returns string not null
-language javascript
-as
+RETURNS STRING NOT NULL
+LANGUAGE JAVASCRIPT
+AS
 $$
 var cmd = `
 SELECT * FROM contacts
-`
+`;
 var sql = snowflake.createStatement({sqlText: cmd});
 var result = sql.execute();
 return '💰';
 $$;
+
+-- Create or replace the GetName stored procedure
 CREATE OR REPLACE PROCEDURE GetName()
-returns string not null
-language javascript
-as
+RETURNS STRING NOT NULL
+LANGUAGE JAVASCRIPT
+AS
 $$
 var cmd = `
 SELECT FIRST_NAME FROM CONTACTS
-`
+`;
 var sql = snowflake.createStatement({sqlText: cmd});
 var result = sql.execute();
 return '💰';

@@ -20,4 +20,4 @@ shadowEnvironment = "shadow"
 filterFile = "filter.rgf"
 
 [environments.prod]
-url = "jdbc:snowflake://rv88946.west-europe.azure.snowflakecomputing.com/?db=HUXSNOWFLAKE_PROD&jdbc_query_result_format=json"
+url = "jdbc:snowflake://rv88946.west-europe.azure.snowflakecomputing.com/?db=HUXSNOWFLAKE_PROD&warehouse=COMPUTE_WH&jdbc_query_result_format=json"
