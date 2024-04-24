@@ -81,4 +81,4 @@ jobs:
       - name: Migrate Build DB
         if: ${{ true }}
         run: |
-          flyway -baselineOnMigrate="true" -user="HUXLEYKENDELL" -password="${{ secrets.PASSWORD }}" -licenseKey="${{ secrets.FLYWAY_LICENSE_KEY }}" -configFiles="filesystem:${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -cherryPick="${{ github.event.inputs.cherryPick }}" -environment="build" -cleanDisabled='false' -X
+          flyway -baselineOnMigrate="true" -user="HUXLEYKENDELL" -password="${{ secrets.PASSWORD }}" -licenseKey="${{ secrets.FLYWAY_LICENSE_KEY }}" -configFiles="filesystem:${{ GITHUB.WORKSPACE }}\flyway.toml" -locations="filesystem:${{ GITHUB.WORKSPACE }}\migrations" info migrate info -cherryPick="${{ github.event.inputs.cherryPick }}" -environment="prod" -cleanDisabled='false' -X
