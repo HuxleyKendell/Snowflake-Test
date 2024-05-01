@@ -24,3 +24,4 @@ url = "jdbc:snowflake://rv88946.west-europe.azure.snowflakecomputing.com/?db=HUX
 
 [environments.build]
 url = "jdbc:snowflake://rv88946.west-europe.azure.snowflakecomputing.com/?db=HUXSNOWFLAKE_BUILD&warehouse=COMPUTE_WH&jdbc_query_result_format=json"
+FLYWAY_PLACEHOLDERS_TABLEENVNAME="buildtable"
